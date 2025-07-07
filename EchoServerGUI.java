@@ -5,6 +5,9 @@ import java.net.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.time.LocalDateTime;
 
 public class EchoServerGUI extends JFrame {
 
@@ -13,6 +16,9 @@ public class EchoServerGUI extends JFrame {
     private int clientCount = 0; // Compteur de clients
     private List<ClientHandler> clients = new CopyOnWriteArrayList<>(); // Liste des clients connectés
     private List<String> messageHistory = new ArrayList<>(); // Historique des messages
+    private UserManager userManager = new UserManager();
+    private MessageStore messageStore = new MessageStore();
+    private Map<String, Group> groups = new HashMap<>();
 
     public EchoServerGUI() {
         setTitle("Serveur Echo");
@@ -40,7 +46,7 @@ public class EchoServerGUI extends JFrame {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(12345); // Port d'écoute
-                log("Serveur en écoute sur le port 12345...");
+                log("Serveur en ecoutesur le port 12345...");
 
                 while (true) {
                     Socket clientSocket = serverSocket.accept(); // Accepte un client
@@ -81,35 +87,119 @@ public class EchoServerGUI extends JFrame {
         @Override
         public void run() {
             try {
-                // Lire le nom du client comme premier message
-                clientName = in.readLine();
-                if (clientName == null || clientName.trim().isEmpty()) {
-                    clientName = "Client " + clientId;
+                // Authentification : attendre une commande REGISTER ou LOGIN
+                String authLine = in.readLine();
+                String[] authParts = authLine.split(" ", 3);
+                boolean authenticated = false;
+                if (authParts[0].equals(Protocol.REGISTER) && authParts.length == 3) {
+                    if (userManager.register(authParts[1], authParts[2])) {
+                        clientName = authParts[1];
+                        out.println(Protocol.SUCCESS + " Inscription réussie");
+                        authenticated = true;
+                    } else {
+                        out.println(Protocol.ERROR + " Nom déjà utilisé");
+                    }
+                } else if (authParts[0].equals(Protocol.LOGIN) && authParts.length == 3) {
+                    if (userManager.login(authParts[1], authParts[2])) {
+                        clientName = authParts[1];
+                        out.println(Protocol.SUCCESS + " Connexion réussie");
+                        authenticated = true;
+                    } else {
+                        out.println(Protocol.ERROR + " Identifiants invalides");
+                    }
                 }
-                log(clientName + " s'est connecte.");
-                broadcast(clientName + " s'est connecte.", this);
+                if (!authenticated) {
+                    socket.close();
+                    return;
+                }
+                log(clientName + " s'est connecté.");
+                broadcast(clientName + " s'est connecté.", this);
                 sendUserListToAll();
-
                 String message;
                 while ((message = in.readLine()) != null) {
                     if (message.startsWith("/mp ")) {
-                        // Format: /mp destinataire message
                         int firstSpace = message.indexOf(' ', 4);
                         if (firstSpace > 4) {
                             String destName = message.substring(4, firstSpace);
                             String privateMsg = message.substring(firstSpace + 1);
-                            boolean sent = sendPrivateMessage(destName, "[Prive de " + clientName + "] " + privateMsg);
+                            boolean sent = sendPrivateMessage(destName, "[Privé de " + clientName + "] " + privateMsg);
                             if (!sent) {
-                                sendMessage("[Serveur] Utilisateur introuvable ou non connecte.");
+                                sendMessage("[Serveur] Utilisateur introuvable ou non connecté.");
+                            } else {
+                                String horodatage = java.time.LocalDateTime.now().toString();
+                                messageStore.addMessage(new Message(clientName, destName, "[Privé] " + privateMsg));
+                            }
+                        }
+                    } else if (message.startsWith("/group ")) {
+                        String[] parts = message.split(" ", 4);
+                        if (parts.length >= 3) {
+                            String action = parts[1];
+                            String groupNameRaw = parts[2].trim();
+                            String groupName = groupNameRaw.contains(" [") ? groupNameRaw.split(" \\[")[0].trim() : groupNameRaw;
+                            if (action.equals("create")) {
+                                if (groups.containsKey(groupName)) {
+                                    sendMessage("[Serveur] Groupe déjà existant.");
+                                } else {
+                                    Group group = new Group(groupName, clientName);
+                                    groups.put(groupName, group);
+                                    sendMessage("[Serveur] Groupe '" + groupName + "' créé. Vous en êtes le modérateur.");
+                                    broadcastGroupListToAll();
+                                }
+                            } else if (action.equals("add") && parts.length == 4) {
+                                String userToAdd = parts[3].trim();
+                                if (userToAdd.contains(" [")) {
+                                    userToAdd = userToAdd.split(" \\[")[0].trim();
+                                }
+                                System.out.println("Tentative d'ajout de membre : '" + userToAdd + "' (utilisateurs connectés : " + getConnectedUsernames() + ")");
+                                Group group = groups.get(groupName);
+                                if (group != null && group.getModerator().equals(clientName)) {
+                                    group.addMember(userToAdd);
+                                    System.out.println("Ajout de " + userToAdd + " au groupe " + groupName + " (modérateur: " + group.getModerator() + ")");
+                                    sendMessage("[Serveur] " + userToAdd + " ajouté au groupe '" + groupName + "'.");
+                                    broadcastGroupListToAll();
+                                } else {
+                                    sendMessage("[Serveur] Vous n'êtes pas le modérateur ou le groupe n'existe pas.");
+                                }
+                            } else if (action.equals("remove") && parts.length == 4) {
+                                String userToRemove = parts[3].trim();
+                                if (userToRemove.contains(" [")) {
+                                    userToRemove = userToRemove.split(" \\[")[0].trim();
+                                }
+                                Group group = groups.get(groupName);
+                                if (group != null && group.getModerator().equals(clientName)) {
+                                    group.removeMember(userToRemove);
+                                    sendMessage("[Serveur] " + userToRemove + " retiré du groupe '" + groupName + "'.");
+                                    broadcastGroupListToAll();
+                                } else {
+                                    sendMessage("[Serveur] Vous n'êtes pas le modérateur ou le groupe n'existe pas.");
+                                }
+                            } else if (action.equals("send") && parts.length == 4) {
+                                String groupMsg = parts[3];
+                                Group group = groups.get(groupName);
+                                if (group != null && group.isMember(clientName)) {
+                                    String horodatage = java.time.LocalDateTime.now().toString();
+                                    String fullMsg = "[Groupe " + groupName + "] [" + horodatage + "] " + clientName + " : " + groupMsg;
+                                    for (ClientHandler client : clients) {
+                                        if (group.isMember(client.clientName)) {
+                                            client.sendMessage(fullMsg);
+                                        }
+                                    }
+                                    messageStore.addMessage(new Message(clientName, groupName, groupMsg));
+                                } else {
+                                    sendMessage("[Serveur] Vous n'êtes pas membre du groupe ou le groupe n'existe pas.");
+                                }
                             }
                         }
                     } else if (message.equalsIgnoreCase("exit")) {
-                        log(clientName + " a quitte la session.");
-                        broadcast(clientName + " a quitte la session.", this);
+                        log(clientName + " a quitté la session.");
+                        broadcast(clientName + " a quitté la session.", this);
                         break;
                     } else {
-                        log(clientName + " : " + message);
-                        broadcast(clientName + " : " + message, this);
+                        String horodatage = java.time.LocalDateTime.now().toString();
+                        String fullMsg = "[" + horodatage + "] " + clientName + " : " + message;
+                        log(fullMsg);
+                        broadcast(fullMsg, this);
+                        messageStore.addMessage(new Message(clientName, "ALL", message));
                     }
                 }
             } catch (IOException e) {
@@ -118,6 +208,7 @@ public class EchoServerGUI extends JFrame {
                 try { socket.close(); } catch (IOException ignored) {}
                 clients.remove(this);
                 if (!clientName.isEmpty()) {
+                    userManager.logout(clientName);
                     broadcast(clientName + " a quitté la session.", this);
                     sendUserListToAll();
                 }
@@ -154,7 +245,11 @@ public class EchoServerGUI extends JFrame {
         List<String> names = new java.util.ArrayList<>();
         for (ClientHandler c : clients) {
             if (c.clientName != null && !c.clientName.isEmpty()) {
-                names.add(c.clientName);
+                String pureName = c.clientName.trim();
+                if (pureName.contains(" [")) {
+                    pureName = pureName.split(" \\[")[0].trim();
+                }
+                names.add(pureName);
             }
         }
         return names;
@@ -187,6 +282,21 @@ public class EchoServerGUI extends JFrame {
             }
         }
         return found;
+    }
+
+    // Diffuse la liste des groupes à tous les clients
+    private void broadcastGroupListToAll() {
+        for (ClientHandler client : clients) {
+            StringBuilder sb = new StringBuilder("/groups ");
+            for (String groupName : groups.keySet()) {
+                Group group = groups.get(groupName);
+                if (group.isMember(client.clientName)) {
+                    sb.append(groupName).append(" [").append(group.getModerator()).append("],");
+                }
+            }
+            System.out.println("Envoi à " + client.clientName + " : " + sb.toString());
+            client.sendMessage(sb.toString());
+        }
     }
 
     // Affiche l'historique dans une boîte de dialogue

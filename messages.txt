@@ -1,0 +1,46 @@
+2025-07-06T11:07:41.933635|William|ALL|hello
+2025-07-06T11:10:21.575385400|Mathis|ALL|hello
+2025-07-06T11:13:37.749930900|William|ALL|yo
+2025-07-06T11:13:43.837141|William|ALL|salut
+2025-07-06T11:20:39.704889300|Mathis|Fleuris|[Priv√©] salut
+2025-07-06T11:21:07.921662300|William|Mathis|[Priv√©] salut Áa va
+2025-07-06T11:26:12.980513100|William|ALL|Salut
+2025-07-06T11:26:27.666287900|William|Fleuris|[Priv√©] yo man
+2025-07-06T11:29:37.525988100|Mathis|ALL|salut
+2025-07-06T11:29:50.703846800|Fleuris|William|[Priv√©] salut William
+2025-07-06T11:30:59.169786600|Fleuris|Les|salut
+2025-07-06T11:31:20.207200400|William|Les|yo Áa va
+2025-07-06T11:36:15.622637900|Mathis|ALL|salut
+2025-07-06T11:36:24.928735600|Mathis|William|[Priv√©] salut William
+2025-07-06T11:36:53.949664500|Mathis|boss|yo
+2025-07-06T11:49:08.222583400|William|boss|[William] salur fleuris
+2025-07-06T12:05:04.525012700|Fleuris|ALL|salut
+2025-07-06T12:05:52.985241300|Fleuris|boss|[Fleuris] salut fleuris
+2025-07-06T12:06:12.099101300|Fleuris|boss|[Fleuris] hello
+2025-07-06T12:06:21.282623300|Ismail|ALL|hey
+2025-07-06T12:10:26.605844100|William|boss|[William] salut fleuris
+2025-07-06T12:15:45.699751|William|boss|[William] salut fleuris
+2025-07-06T12:18:05.444980200|William|ALL|hey
+2025-07-06T12:18:18.969630600|William|ALL|salut fleuris
+2025-07-06T12:18:52.951721200|William|boss|[William] salut fleuris
+2025-07-06T12:19:15.619394500|William|boss|[William] salut fleuris
+2025-07-06T12:19:45.947600200|William|ALL|salut mathis
+2025-07-06T12:19:51.888819900|William|boss|[William] salut mathis
+2025-07-06T12:23:42.261433200|William|ALL|salut
+2025-07-06T12:24:07.147348|William|boss|[William] salut
+2025-07-06T12:27:16.485632400|William|ALL|salut fleuris
+2025-07-06T12:27:24.198414300|William|boss|[William] salut fleuris
+2025-07-06T12:29:41.444873500|William|ALL|salut
+2025-07-06T12:32:39.331979600|fleuris|boss|[fleuris] envoyer
+2025-07-06T12:38:42.796250600|William|boss|salut fleuris
+2025-07-06T12:39:22.761074600|Fleuris|boss|salut William
+2025-07-06T12:39:35.092790700|Fleuris|Mathis|[Priv√©] salut mathis
+2025-07-06T12:43:09.547530600|Fleuris|boss|salut
+2025-07-06T12:43:32.579012400|Fleuris|boss|yo le groupe
+2025-07-06T12:43:45.111270900|William|boss|yo Áa va
+2025-07-06T12:44:05.813768600|William|Mathis|[Priv√©] salut les gars tu veux rejpindre le groupe
+2025-07-06T12:53:57.611242400|William|conf|salut tout le monde
+2025-07-06T12:55:02.080747500|Mathis|conf|salut
+2025-07-06T13:09:18.138444|Fleuris|ALL|salut William
+2025-07-06T13:19:17.325626600|William|ALL|salut
+2025-07-06T13:19:22.582235400|William|ALL|Áa va
