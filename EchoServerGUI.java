@@ -14,7 +14,7 @@ public class EchoServerGUI extends JFrame {
     private JTextArea logArea;
     private ServerSocket serverSocket;
     private int clientCount = 0; // Compteur de clients
-    private List<ClientHandler> clients = new CopyOnWriteArrayList<>(); // Liste des clients connectés
+    private List<ClientHandler> clients = new CopyOnWriteArrayList<>(); // Liste des clients connectes
     private List<String> messageHistory = new ArrayList<>(); // Historique des messages
     private UserManager userManager = new UserManager();
     private MessageStore messageStore = new MessageStore();
@@ -94,7 +94,7 @@ public class EchoServerGUI extends JFrame {
                 if (authParts[0].equals(Protocol.REGISTER) && authParts.length == 3) {
                     if (userManager.register(authParts[1], authParts[2])) {
                         clientName = authParts[1];
-                        out.println(Protocol.SUCCESS + " Inscription réussie");
+                        out.println(Protocol.SUCCESS + " Inscription reussie");
                         authenticated = true;
                     } else {
                         out.println(Protocol.ERROR + " Nom déjà utilisé");
@@ -102,7 +102,7 @@ public class EchoServerGUI extends JFrame {
                 } else if (authParts[0].equals(Protocol.LOGIN) && authParts.length == 3) {
                     if (userManager.login(authParts[1], authParts[2])) {
                         clientName = authParts[1];
-                        out.println(Protocol.SUCCESS + " Connexion réussie");
+                        out.println(Protocol.SUCCESS + " Connexion reussie");
                         authenticated = true;
                     } else {
                         out.println(Protocol.ERROR + " Identifiants invalides");
@@ -112,8 +112,8 @@ public class EchoServerGUI extends JFrame {
                     socket.close();
                     return;
                 }
-                log(clientName + " s'est connecté.");
-                broadcast(clientName + " s'est connecté.", this);
+                log(clientName + " s'est connecte.");
+                broadcast(clientName + " s'est connecte.", this);
                 sendUserListToAll();
                 String message;
                 while ((message = in.readLine()) != null) {
@@ -124,7 +124,7 @@ public class EchoServerGUI extends JFrame {
                             String privateMsg = message.substring(firstSpace + 1);
                             boolean sent = sendPrivateMessage(destName, "[Privé de " + clientName + "] " + privateMsg);
                             if (!sent) {
-                                sendMessage("[Serveur] Utilisateur introuvable ou non connecté.");
+                                sendMessage("[Serveur] Utilisateur introuvable ou non connecte.");
                             } else {
                                 String horodatage = java.time.LocalDateTime.now().toString();
                                 messageStore.addMessage(new Message(clientName, destName, "[Privé] " + privateMsg));
@@ -142,7 +142,7 @@ public class EchoServerGUI extends JFrame {
                                 } else {
                                     Group group = new Group(groupName, clientName);
                                     groups.put(groupName, group);
-                                    sendMessage("[Serveur] Groupe '" + groupName + "' créé. Vous en êtes le modérateur.");
+                                    sendMessage("[Serveur] Groupe '" + groupName + "' cree. Vous en etes le moderateur.");
                                     broadcastGroupListToAll();
                                 }
                             } else if (action.equals("add") && parts.length == 4) {
@@ -150,15 +150,15 @@ public class EchoServerGUI extends JFrame {
                                 if (userToAdd.contains(" [")) {
                                     userToAdd = userToAdd.split(" \\[")[0].trim();
                                 }
-                                System.out.println("Tentative d'ajout de membre : '" + userToAdd + "' (utilisateurs connectés : " + getConnectedUsernames() + ")");
+                                System.out.println("Tentative d'ajout de membre : '" + userToAdd + "' (utilisateurs connectes : " + getConnectedUsernames() + ")");
                                 Group group = groups.get(groupName);
                                 if (group != null && group.getModerator().equals(clientName)) {
                                     group.addMember(userToAdd);
-                                    System.out.println("Ajout de " + userToAdd + " au groupe " + groupName + " (modérateur: " + group.getModerator() + ")");
-                                    sendMessage("[Serveur] " + userToAdd + " ajouté au groupe '" + groupName + "'.");
+                                    System.out.println("Ajout de " + userToAdd + " au groupe " + groupName + " (moderateur: " + group.getModerator() + ")");
+                                    sendMessage("[Serveur] " + userToAdd + " ajouter au groupe '" + groupName + "'.");
                                     broadcastGroupListToAll();
                                 } else {
-                                    sendMessage("[Serveur] Vous n'êtes pas le modérateur ou le groupe n'existe pas.");
+                                    sendMessage("[Serveur] Vous n'etes pas le moderateur ou le groupe n'existe pas.");
                                 }
                             } else if (action.equals("remove") && parts.length == 4) {
                                 String userToRemove = parts[3].trim();
@@ -168,10 +168,10 @@ public class EchoServerGUI extends JFrame {
                                 Group group = groups.get(groupName);
                                 if (group != null && group.getModerator().equals(clientName)) {
                                     group.removeMember(userToRemove);
-                                    sendMessage("[Serveur] " + userToRemove + " retiré du groupe '" + groupName + "'.");
+                                    sendMessage("[Serveur] " + userToRemove + " retire du groupe '" + groupName + "'.");
                                     broadcastGroupListToAll();
                                 } else {
-                                    sendMessage("[Serveur] Vous n'êtes pas le modérateur ou le groupe n'existe pas.");
+                                    sendMessage("[Serveur] Vous n'etes pas le moderateur ou le groupe n'existe pas.");
                                 }
                             } else if (action.equals("send") && parts.length == 4) {
                                 String groupMsg = parts[3];
@@ -186,7 +186,7 @@ public class EchoServerGUI extends JFrame {
                                     }
                                     messageStore.addMessage(new Message(clientName, groupName, groupMsg));
                                 } else {
-                                    sendMessage("[Serveur] Vous n'êtes pas membre du groupe ou le groupe n'existe pas.");
+                                    sendMessage("[Serveur] Vous n'etes pas membre du groupe ou le groupe n'existe pas.");
                                 }
                             }
                         }
@@ -240,7 +240,7 @@ public class EchoServerGUI extends JFrame {
         }
     }
 
-    // Récupérer la liste des noms d'utilisateurs connectés
+    // Récupérer la liste des noms d'utilisateurs connectes
     private List<String> getConnectedUsernames() {
         List<String> names = new java.util.ArrayList<>();
         for (ClientHandler c : clients) {
@@ -255,7 +255,7 @@ public class EchoServerGUI extends JFrame {
         return names;
     }
 
-    // Envoie la liste des utilisateurs connectés à tous les clients
+    // Envoie la liste des utilisateurs connectes à tous les clients
     private void sendUserListToAll() {
         StringBuilder sb = new StringBuilder("/users ");
         for (String name : getConnectedUsernames()) {

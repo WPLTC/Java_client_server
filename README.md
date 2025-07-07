@@ -8,14 +8,14 @@ Cette application est un système de chat client-serveur en Java, avec interface
 
 - **Inscription et connexion des utilisateurs** (avec persistance dans `users.txt` côté serveur)
 - **Interface graphique moderne** (Swing)
-- **Chat global** (tous les utilisateurs connectés)
+- **Chat global** (tous les utilisateurs connectes)
 - **Messages privés** (sélection d'un utilisateur, bouton "Message privé")
 - **Groupes/Conférences** :
-  - Création de groupes/conférences (le créateur devient modérateur)
-  - Ajout/retrait de membres par le modérateur
+  - Création de groupes/conférences (le créateur devient moderateur)
+  - Ajout/retrait de membres par le moderateur
   - Discussion de groupe (messages visibles par tous les membres)
   - Fenêtre dédiée pour chaque conférence
-- **Affichage de la liste des utilisateurs connectés**
+- **Affichage de la liste des utilisateurs connectes**
 - **Persistance des utilisateurs** (connexion possible après redémarrage du serveur)
 - **Stockage local des identifiants côté client** (`credentials.txt`)
 - **Bouton "Envoyer" pour le chat**
@@ -50,14 +50,14 @@ java EchoClientGUI
 
 ### 4. Chat et groupes
 - Envoie des messages dans le chat global ou en privé.
-- Crée un groupe/conférence, sélectionne les membres connectés, et discutez dans une fenêtre dédiée.
-- Le modérateur peut ajouter/retirer des membres à tout moment.
+- Crée un groupe/conférence, sélectionne les membres connectes, et discutez dans une fenêtre dédiée.
+- Le moderateur peut ajouter/retirer des membres à tout moment.
 
 ## Commandes principales (pour les utilisateurs avancés)
 - `/mp NomUtilisateur message` : envoyer un message privé
 - `/group create NomGroupe` : créer un groupe/conférence
-- `/group add NomGroupe NomUtilisateur` : ajouter un membre (modérateur uniquement)
-- `/group remove NomGroupe NomUtilisateur` : retirer un membre (modérateur uniquement)
+- `/group add NomGroupe NomUtilisateur` : ajouter un membre (moderateur uniquement)
+- `/group remove NomGroupe NomUtilisateur` : retirer un membre (moderateur uniquement)
 - `/group send NomGroupe message` : envoyer un message à un groupe
 - `exit` : se déconnecter
 

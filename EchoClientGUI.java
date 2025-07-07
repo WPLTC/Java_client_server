@@ -235,7 +235,7 @@ public class EchoClientGUI extends JFrame {
                 return;
             } else if (serverResponse.startsWith(Protocol.SUCCESS)) {
                 chatArea.append(serverResponse + "\n");
-                // Si inscription réussie, enregistrer les identifiants (sans doublon)
+                // Si inscription reussie, enregistrer les identifiants (sans doublon)
                 if (isRegisterMode) {
                     try {
                         Path credPath = Paths.get("credentials.txt");
@@ -346,7 +346,7 @@ public class EchoClientGUI extends JFrame {
         }
     }
 
-    // Met à jour la liste des utilisateurs connectés
+    // Met à jour la liste des utilisateurs connectes
     private void updateUserList(String users) {
         SwingUtilities.invokeLater(() -> {
             userListModel.clear();
@@ -454,7 +454,7 @@ public class EchoClientGUI extends JFrame {
     }
 
     private void showCreateConferenceDialog() {
-        // Liste des utilisateurs connectés (hors soi-même)
+        // Liste des utilisateurs connectes (hors soi-même)
         java.util.List<String> candidates = new ArrayList<>();
         for (int i = 0; i < userListModel.size(); i++) {
             String user = userListModel.get(i);

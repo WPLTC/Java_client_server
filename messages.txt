@@ -44,3 +44,10 @@
 2025-07-06T13:09:18.138444|Fleuris|ALL|salut William
 2025-07-06T13:19:17.325626600|William|ALL|salut
 2025-07-06T13:19:22.582235400|William|ALL|�a va
+2025-07-07T12:17:05.650153500|Fleuris|William|[Privé] Salut William
+2025-07-07T12:22:06.139569|William|boss|Salut fleuris
+2025-07-07T12:27:32.010311500|Fleuris|William|[Privé] Salut William
+2025-07-07T12:27:44.321722100|Fleuris|ALL|Salut tout le monde 
+2025-07-07T12:28:11.976010500|William|boss|salut le groupe
+2025-07-07T12:28:36.942590100|Fleuris|boss|salut vous allez bien ?
+2025-07-07T12:33:00.865322|William|Fleuris|[Privé] zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
