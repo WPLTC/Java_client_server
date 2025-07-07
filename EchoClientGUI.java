@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.nio.file.*;
+import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Font;
 
 public class EchoClientGUI extends JFrame {
 
@@ -39,6 +42,14 @@ public class EchoClientGUI extends JFrame {
     private JButton sendButton;
 
     public EchoClientGUI() {
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) { /* ignore */ }
         setTitle("Client Echo");
         setSize(400, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -49,6 +60,15 @@ public class EchoClientGUI extends JFrame {
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         inputField = new JTextField();
+        chatArea.setBackground(new Color(245, 245, 245));
+        chatArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        inputField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        sendButton = new JButton("Envoyer");
+        sendButton.setEnabled(true);
+        sendButton.addActionListener(e -> sendMessage());
+        sendButton.setBackground(new Color(0, 120, 215));
+        sendButton.setForeground(Color.WHITE);
+        sendButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
 
         connectButton = new JButton("Connexion");
         disconnectButton = new JButton("Deconnexion");
@@ -127,9 +147,6 @@ public class EchoClientGUI extends JFrame {
         add(topPanel, BorderLayout.NORTH);
 
         add(new JScrollPane(chatArea), BorderLayout.CENTER);
-        sendButton = new JButton("Envoyer");
-        sendButton.setEnabled(true);
-        sendButton.addActionListener(e -> sendMessage());
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.time.LocalDateTime;
+import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.Font;
 
 public class EchoServerGUI extends JFrame {
 
@@ -21,6 +24,14 @@ public class EchoServerGUI extends JFrame {
     private Map<String, Group> groups = new HashMap<>();
 
     public EchoServerGUI() {
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) { /* ignore */ }
         setTitle("Serveur Echo");
         setSize(400, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -28,6 +39,8 @@ public class EchoServerGUI extends JFrame {
         // Zone de texte pour afficher les messages du client
         logArea = new JTextArea();
         logArea.setEditable(false);
+        logArea.setBackground(new Color(245, 245, 245));
+        logArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         add(new JScrollPane(logArea), BorderLayout.CENTER);
 
         // Ajout du bouton Afficher l'historique
