@@ -31,6 +31,11 @@ Cette application est un système de chat client-serveur en Java, avec interface
 
 ## Utilisation
 
+> **Important :** Avant de lancer les commandes ci-dessous, placez-vous dans le dossier `socket_GUI` :
+> ```sh
+> cd socket_GUI
+> ```
+
 ### 1. Lancer le serveur
 Dans un terminal, exécute :
 ```sh
